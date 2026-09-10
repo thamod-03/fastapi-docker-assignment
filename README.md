@@ -2,7 +2,7 @@
 
 A simple REST API application developed using **FastAPI** and containerized using **Docker Compose**.
 
-This project demonstrates the process of building a Python web application, creating a Docker image, running the application inside a container, and exposing REST API endpoints.
+This project demonstrates the process of building a Python web application, creating a Docker image, managing environment variables, running the application inside a Docker container, and exposing REST API endpoints.
 
 ---
 
@@ -13,6 +13,7 @@ This project demonstrates the process of building a Python web application, crea
 - Uvicorn
 - Docker
 - Docker Compose
+- python-dotenv
 
 ---
 
@@ -20,6 +21,7 @@ This project demonstrates the process of building a Python web application, crea
 
 ```
 fastapi-docker-assignment
+
 │
 ├── app
 │   └── main.py
@@ -30,11 +32,14 @@ fastapi-docker-assignment
 │   ├── health-api.png
 │   └── home-api.png
 │
-├── Dockerfile
+├── .dockerignore
+├── .env.example
+├── .gitignore
 ├── compose.yaml
-├── requirements.txt
+├── Dockerfile
 ├── README.md
-└── reflection.md
+├── reflection.md
+└── requirements.txt
 ```
 
 ---
@@ -50,7 +55,37 @@ Make sure the following are installed:
 
 ---
 
-## Build and Start the Application
+## Environment Configuration
+
+This project uses environment variables to store application configuration.
+
+Create a `.env` file in the project root directory.
+
+Example:
+
+```env
+STUDENT_ID=your_student_id
+STUDENT_NAME=your_name
+```
+
+A template file is provided:
+
+```
+.env.example
+```
+
+The `.env` file is ignored by Git to prevent exposing local configuration values.
+
+Docker Compose automatically loads these variables into the container using:
+
+```yaml
+env_file:
+  - .env
+```
+
+---
+
+# Build and Start the Application
 
 Clone the repository:
 
@@ -63,6 +98,14 @@ Navigate into the project folder:
 ```bash
 cd fastapi-docker-assignment
 ```
+
+Create your `.env` file:
+
+```bash
+copy .env.example .env
+```
+
+Update the values according to your environment.
 
 Build and run the application:
 
@@ -84,7 +127,7 @@ http://localhost:5000
 
 ### GET /
 
-Returns application information.
+Returns application information loaded from environment variables.
 
 URL:
 
@@ -116,7 +159,7 @@ URL:
 http://localhost:5000/health
 ```
 
-Example response:
+Response:
 
 ```json
 {
@@ -132,9 +175,10 @@ The application uses Docker to package the FastAPI service with all required dep
 
 ## Docker Features Used
 
-- Python lightweight base image (`python:3.12-slim`)
+- Lightweight Python base image (`python:3.12-slim`)
 - Dockerfile for image creation
-- Docker Compose for container management
+- Docker Compose for container orchestration
+- Environment variable management using `.env`
 - Port mapping between host machine and container
 - Uvicorn server for running the FastAPI application
 
@@ -148,22 +192,28 @@ The application uses Docker to package the FastAPI service with all required dep
 docker compose up --build
 ```
 
+## Run in Background Mode
+
+```bash
+docker compose up -d
+```
+
 ## View Running Containers
 
 ```bash
 docker ps
 ```
 
-## Stop the Application
-
-```bash
-docker compose down
-```
-
 ## View Container Logs
 
 ```bash
 docker compose logs
+```
+
+## Stop the Application
+
+```bash
+docker compose down
 ```
 
 ---
@@ -187,22 +237,18 @@ Included evidence:
 
 ---
 
-# Environment Configuration
+# Environment Security
 
-For future improvements, sensitive configuration values can be managed using environment variables.
+Sensitive configuration values should not be committed to public repositories.
 
-Example:
-
-```
-.env
-```
+This project follows the practice:
 
 ```
-STUDENT_ID=your_student_id
-STUDENT_NAME=your_name
+.env              → Local configuration (Not committed)
+.env.example      → Template shared publicly
 ```
 
-Environment files containing private values should not be uploaded to public repositories.
+The `.gitignore` file prevents accidental upload of private environment files.
 
 ---
 
@@ -211,4 +257,3 @@ Environment files containing private values should not be uploaded to public rep
 - No database integration
 - No authentication mechanism
 - Designed as a simple REST API demonstration project
-
