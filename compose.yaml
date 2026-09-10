@@ -1,0 +1,7 @@
+services:
+
+  api:
+    build: .
+    container_name: fastapi-docker-api
+    ports:
+      - "5000:5000"
